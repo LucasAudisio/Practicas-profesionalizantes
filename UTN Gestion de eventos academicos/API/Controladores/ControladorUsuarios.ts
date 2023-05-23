@@ -124,7 +124,7 @@ RutasUsuarios.post("/registrarse", bodyParser.json(), (_req, _res) => {
 RutasUsuarios.get("/login", (_req, _res) => {
     accesoUsuario.getUsuario(_req.body.nombre).then((pedro) => {
         if(pedro){
-            accesoUsuario.login(_req.body.nombre, _req.body.contra).then((v) => {
+            accesoUsuario.login(_req.body.nombre, _req.body.contraseña).then((v) => {
                 if(v){
                     if(v == "todo bien"){
                         let respuesta: JSON = JSON.parse(JSON.stringify(pedro));
