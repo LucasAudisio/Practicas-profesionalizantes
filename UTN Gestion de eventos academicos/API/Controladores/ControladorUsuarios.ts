@@ -7,7 +7,7 @@ import bodyParser from 'body-parser';
 import { generarClave, verificarClave } from '../jwt';
 
 
-const url: string = "mongodb://localhost:27017/Gestion-de-eventos-academicos";
+const url: string = "mongodb://127.0.0.1:27017/Gestion-de-eventos-academicos";
 const client: MongoClient = new MongoClient(url);
 const database: Db = client.db("Gestion-de-eventos-academicos");
 
@@ -124,7 +124,7 @@ RutasUsuarios.post("/registrarse", bodyParser.json(), (_req, _res) => {
 RutasUsuarios.get("/login", (_req, _res) => {
     accesoUsuario.getUsuario(_req.body.nombre).then((pedro) => {
         if(pedro){
-            accesoUsuario.login(_req.body.nombre, _req.body.contra).then((v) => {
+            accesoUsuario.login(_req.body.nombre, _req.body.contraseña).then((v) => {
                 if(v){
                     if(v == "todo bien"){
                         let respuesta: JSON = JSON.parse(JSON.stringify(pedro));
