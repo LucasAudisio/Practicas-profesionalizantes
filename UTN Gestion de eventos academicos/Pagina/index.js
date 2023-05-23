@@ -2,10 +2,11 @@ const url = "http://localhost:3000";
 
 function registrarse(nombre, correo, contraseña) {
   const data = {
+    "nombre": nombre,
     "correo": correo,
     "contraseña": contraseña
   }
-  const urlUsusario = url + "/usuarios/registrarse/" + nombre;
+  const urlUsusario = url + "/registrarse";
   const response = fetch(urlUsusario, {
     url: urlUsusario,
     method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -26,3 +27,5 @@ function test() {
     });
   });
 }
+
+

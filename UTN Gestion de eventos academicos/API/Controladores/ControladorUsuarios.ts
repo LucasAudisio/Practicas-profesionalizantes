@@ -4,6 +4,7 @@ import { Usuario } from '../Usuario';
 import { AccesoUsuario } from '../AccesoBD/AccesoUsuarios';
 import { Db, MongoClient } from 'mongodb';
 import bodyParser from 'body-parser';
+import { generarClave, verificarClave } from '../jwt';
 
 
 const url: string = "mongodb://localhost:27017/Gestion-de-eventos-academicos";
@@ -14,8 +15,9 @@ var accesoUsuario: AccesoUsuario = new AccesoUsuario(url, database, database.col
 
 export const RutasUsuarios = Router();
 
-//RutasUsuarios.use("/usuarios", verificarDominio)
-
+RutasUsuarios.use("/usuarios", verificarDominio, verificarClave)
+RutasUsuarios.use("/registrarse", verificarDominio)
+RutasUsuarios.use("/login", verificarDominio)
 //lista de usuarios
 RutasUsuarios.get("/usuarios", (_req,_res) => {
     console.log("se llego")
@@ -104,7 +106,7 @@ RutasUsuarios.patch("/usuarios/:nombre", (_req,_res) => {
 })
 
 // Registrarse
-RutasUsuarios.post("/usuarios/registrarse/", bodyParser.json(), (_req, _res) => {
+RutasUsuarios.post("/registrarse", bodyParser.json(), (_req, _res) => {
     console.log("cuerpo: " + _req.body.contraseña)
     accesoUsuario.getUsuario(_req.body.nombre).then((v) => {
         if(v != undefined){
@@ -117,16 +119,16 @@ RutasUsuarios.post("/usuarios/registrarse/", bodyParser.json(), (_req, _res) => 
         }
     })    
 })
-/*
+
 // Login
-RutasUsuarios.get("/usuarios/login/:nombre", (_req, _res) => {
-    accesoUsuario.getUsuario(_req.params.nombre).then((pedro) => {
+RutasUsuarios.get("/login", (_req, _res) => {
+    accesoUsuario.getUsuario(_req.body.nombre).then((pedro) => {
         if(pedro){
-            accesoUsuario.login(_req.params.nombre, _req.body.contra).then((v) => {
+            accesoUsuario.login(_req.body.nombre, _req.body.contra).then((v) => {
                 if(v){
                     if(v == "todo bien"){
-                        let respuesta: JsonObject = JSON.parse(JSON.stringify(pedro));
-                        respuesta["claveJWT"] = generarClave(_req.params.nombre);
+                        let respuesta: JSON = JSON.parse(JSON.stringify(pedro));
+                        Object.assign(respuesta, {"claveJWT": generarClave(_req.body.nombre)});
                         _res.json(respuesta);
                     }
                     else{
@@ -139,4 +141,4 @@ RutasUsuarios.get("/usuarios/login/:nombre", (_req, _res) => {
             _res.status(404).send();
         }
     })
-})*/
+})
