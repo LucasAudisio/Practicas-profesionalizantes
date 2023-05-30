@@ -3,6 +3,7 @@ import { Router } from "express";
 import { Db, MongoClient } from "mongodb";
 import { AccesoEvento } from "../AccesoBD/AccesoEvento";
 import { Evento } from "../Evento";
+import { Tag } from "../Tag";
 
 const url: string = "mongodb://127.0.0.1:27017/Gestion-de-eventos-academicos";
 const client: MongoClient = new MongoClient(url);
@@ -103,5 +104,11 @@ RutasEventos.patch("/eventos/:nombre", (_req,_res) => {
             accesoEventos.modificarEvento(eventoTemp);
             _res.json(eventoTemp);
         }
+    })
+})
+
+RutasEventos.get("/eventos/busquedaTags/:tags", (_req, _res) => {
+    accesoEventos.getEventoTag(_req.params.tags.split(",")).then((v) => {
+        _res.json(v);
     })
 })

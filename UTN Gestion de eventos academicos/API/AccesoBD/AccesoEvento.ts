@@ -1,5 +1,6 @@
 import { Collection, Db } from "mongodb";
 import { Evento } from "../Evento";
+import { Tag } from "../Tag";
 
 export class AccesoEvento{
     url: String;
@@ -34,5 +35,10 @@ export class AccesoEvento{
     public async borrarEvento(nombre: String){
         const filtro = { nombre: nombre };
         this.collection.findOneAndDelete(filtro);
+    }
+
+    public async getEventoTag(tags: Array<String>){
+        const filtro = { tags: { $in: tags } };
+        return await this.collection.find(filtro).toArray();
     }
 }
