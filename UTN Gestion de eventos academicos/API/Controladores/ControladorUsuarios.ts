@@ -18,6 +18,7 @@ export const RutasUsuarios = Router();
 RutasUsuarios.use("/usuarios", verificarDominio, verificarClave)
 RutasUsuarios.use("/registrarse", verificarDominio)
 RutasUsuarios.use("/login", verificarDominio)
+
 //lista de usuarios
 RutasUsuarios.get("/usuarios", (_req,_res) => {
     console.log("se llego")
