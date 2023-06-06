@@ -6,9 +6,9 @@ function registrarse(nombre, correo, contraseña) {
     "correo": correo,
     "contraseña": contraseña
   }
-  const urlUsusario = url + "/registrarse";
-  const response = fetch(urlUsusario, {
-    url: urlUsusario,
+  const urlUsusarioRegistro = url + "/registrarse";
+  const response = fetch(urlUsusarioRegistro, {
+    url: urlUsusarioRegistro,
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     //mode: "cors", // no-cors, *cors, same-origin
     headers: {
@@ -17,15 +17,31 @@ function registrarse(nombre, correo, contraseña) {
     body: JSON.stringify(data), // body data type must match "Content-Type" header
   });
 }
+function iniciarSesion(nombre, contraseña){
+  const dataBody = {
+    "nombre": nombre,
+    "contraseña": contraseña
+  }
+  const urlUsusarioLogin = url + "/login";
+  const response = fetch(urlUsusarioLogin, {
+    url: urlUsusarioLogin,
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    //mode: "cors", // no-cors, *cors, same-origin
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(dataBody), // body data type must match "Content-Type" header
+  }).then(function(response){
+    response.json().then(function(info){
+    localStorage.setItem("data", JSON.stringify(info))
+    console.log(JSON.stringify(info))
+    })
+  });
+}
 
 function test() {
-  const urlTest = url + "/usuarios";
-  fetch(urlTest).then(function (response) {
-    response.json().then(function (data) {
-      console.log("entra al fetch");
-      console.log(data);
-    });
-  });
+  localStorage.clear()
+  console.log(localStorage.getItem("data"))
 }
 
 

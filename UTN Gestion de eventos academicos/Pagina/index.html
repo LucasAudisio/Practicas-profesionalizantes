@@ -73,10 +73,6 @@
             <p>Estoy de acuerdo con los terminos y condiciones</p>
             <input type="checkbox" class="mb-3" required>
             <input class="btn btn-success" onclick="registrarse(document.getElementById('nombre').value, document.getElementById('correo').value, document.getElementById('contraseña').value)" type="submit" value="Registrarse">
-
-
-
-
         </form>
         </div>
       </div>
@@ -90,15 +86,25 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          ...
+          <form class="needs-validation">
+            <div class="nombreYapellido">
+                <div class="form-group was-validated mb-3 mr-2">      
+                    <input class="form-control" type="text" placeholder="Nombre" id="nombre" required>
+                </div>
+            </div>
+            <div class="form-group was-validated mb-3">
+                <input class="form-control" type="password" placeholder="contraseña" id="contraseña" required>
+            </div>
+        </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-          <button type="button" class="btn btn-primary">Iniciar sesion</button>
+          <button type="button" onclick="iniciarSesion(document.getElementById('nombre').value, document.getElementById('contraseña').value)" class="btn btn-primary">Iniciar sesion</button>
         </div>
       </div>
     </div>
   </div>
   <button onclick="test()"></button>
+  <button onclick="iniciarSesion(document.getElementById('nombre').value, document.getElementById('contraseña').value)" type="submit">a</button>
   </body>
 </html>

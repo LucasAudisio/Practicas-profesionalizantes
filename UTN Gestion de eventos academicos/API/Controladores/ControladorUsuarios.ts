@@ -63,7 +63,6 @@ RutasUsuarios.delete("/usuarios/:nombre", (_req,_res) => {
         }
     })
 })
-
 //modificar todo el usuario
 RutasUsuarios.put("/usuarios/:nombre", (_req,_res) => {
     accesoUsuario.getUsuario(_req.params.nombre).then((v)=>{
@@ -79,7 +78,6 @@ RutasUsuarios.put("/usuarios/:nombre", (_req,_res) => {
         }
     })
 })
-
 RutasUsuarios.patch("/usuarios/:nombre", (_req,_res) => {
     accesoUsuario.getUsuario(_req.params.nombre).then((v)=>{
         if(v == undefined){
@@ -105,7 +103,6 @@ RutasUsuarios.patch("/usuarios/:nombre", (_req,_res) => {
         }
     })
 })
-
 // Registrarse
 RutasUsuarios.post("/registrarse", bodyParser.json(), (_req, _res) => {
     console.log("cuerpo: " + _req.body.contraseña)
@@ -120,9 +117,8 @@ RutasUsuarios.post("/registrarse", bodyParser.json(), (_req, _res) => {
         }
     })    
 })
-
 // Login
-RutasUsuarios.get("/login", (_req, _res) => {
+RutasUsuarios.post("/login", bodyParser.json(), (_req, _res) => {
     accesoUsuario.getUsuario(_req.body.nombre).then((pedro) => {
         if(pedro){
             accesoUsuario.login(_req.body.nombre, _req.body.contraseña).then((v) => {
