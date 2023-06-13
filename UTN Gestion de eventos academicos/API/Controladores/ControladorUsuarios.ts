@@ -129,13 +129,13 @@ RutasUsuarios.post("/login", bodyParser.json(), (_req, _res) => {
                         _res.json(respuesta);
                     }
                     else{
-                        _res.send(v);
+                        _res.json(v);
                     }
                 }
             });
         }
         else {
-            _res.status(404).send();
+            _res.json("usuario no encontrado");
         }
     })
 })

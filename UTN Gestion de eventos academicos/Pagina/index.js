@@ -18,7 +18,7 @@ function registrarse(nombre, correo, contraseña) {
   });
 }
 function iniciarSesion(nombre, contraseña){
-  const dataBody = {
+  var dataBody = {
     "nombre": nombre,
     "contraseña": contraseña
   }
@@ -29,19 +29,34 @@ function iniciarSesion(nombre, contraseña){
     //mode: "cors", // no-cors, *cors, same-origin
     headers: {
       "Content-Type": "application/json"
-    },
+    },  
     body: JSON.stringify(dataBody), // body data type must match "Content-Type" header
   }).then(function(response){
     response.json().then(function(info){
     localStorage.setItem("data", JSON.stringify(info))
-    console.log(JSON.stringify(info))
+    if(info == "contraseña incorrecta"){
+      document.getElementById("incorrecta").style.display = "block"
+      document.getElementById("usuarioNe").style.display = "none"
+    }
+    else if(info == "usuario no encontrado"){
+      document.getElementById("usuarioNe").style.display = "block"
+      document.getElementById("incorrecta").style.display = "nonr"
+    }
+    else{
+      document.getElementById("staticBackdrop2").style.display = "none"
+      $('.modal-backdrop').hide();
+      document.getElementById("btn-registro").style.display = "none"
+      document.getElementById("btn-login").style.display = "none"
+      document.getElementById("btn-cs").style.display = "block"
+    }
+    console.log(info);
     })
   });
 }
 
-function test() {
+function cerrarSesion() {
   localStorage.clear()
-  console.log(localStorage.getItem("data"))
+  location.reload()
 }
 
 
