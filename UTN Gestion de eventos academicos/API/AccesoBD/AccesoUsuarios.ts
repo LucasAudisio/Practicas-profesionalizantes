@@ -1,7 +1,7 @@
 import { Collection, Db } from "mongodb";
-import { Usuario } from "../Usuario";
 import { createHash } from 'node:crypto';
-import { TipoUsuario } from "../TipoUsuario";
+import { Investigador } from "../Investigador";
+
 function sha256(content: string) {  
     return createHash('sha256').update(content).digest('hex')
 }
@@ -17,8 +17,8 @@ export class AccesoUsuario{
         this.collection = collection;
     }
 
-    public async getUsuario(nombre: string) {
-        const filtro = { nombre: nombre };
+    public async getUsuario(dato: string) {
+        const filtro = { $or: [{nombre: dato}, {correo: dato}] };
         const usuario = await this.collection.findOne(filtro);
         return usuario;
     }
@@ -27,28 +27,24 @@ export class AccesoUsuario{
         return await this.collection.find().toArray();
     }
 
-    public async subirUsuario(usuario: Usuario){
+    public async subirUsuario(usuario: any){
+        usuario.contraseña = sha256(usuario.contraseña);
         this.collection.insertOne(JSON.parse(JSON.stringify(usuario)));
     }
 
-    public async modificarUsuario(usuario: Usuario){
+    public async modificarUsuario(usuario: any){
+        usuario.contraseña = sha256(usuario.contraseña);
         const filtro = { nombre: usuario.nombre };
         this.collection.findOneAndReplace(filtro, JSON.parse(JSON.stringify(usuario)));
     }
 
     public async borrarUsuario(nombre: string){
-        //eliminar de la base de datos
         const filtro = { nombre: nombre };
         this.collection.findOneAndDelete(filtro);
     }
 
-    public async buscarUsuarioNuevo(nombreUsuario: string, nombreNuevo: string){
-        const usuario = await this.collection.findOne({"nombre": nombreUsuario});
-        return await this.collection.find({$and: [{"nombre": {$regex: "e", $options: "i"}}, {"id": {$nin: usuario?.contatctosNombres}}]}).toArray();
-    }
-
     public async registrarse(nombre: string, contraseña: string, correo: string){
-        const usuario = new Usuario(correo,sha256(contraseña),nombre, "", TipoUsuario.Usuario)
+        const usuario = new Investigador(correo,sha256(contraseña),nombre, "");
         await this.collection.insertOne(usuario);
         return usuario;
     }

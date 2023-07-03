@@ -3,6 +3,9 @@ import { Router } from "express";
 import { Db, MongoClient } from "mongodb";
 import { AccesoEvento } from "../AccesoBD/AccesoEvento";
 import { Evento } from "../Evento";
+import { checkAdmin } from "./ControladorAdministradores";
+import { verificarClave } from "../jwt";
+import { verificarDominio } from "../verificacionDominio";
 
 const url: string = "mongodb://127.0.0.1:27017/Gestion-de-eventos-academicos";
 const client: MongoClient = new MongoClient(url);
@@ -12,22 +15,26 @@ var accesoEventos: AccesoEvento = new AccesoEvento(url, database, database.colle
 
 export const RutasEventos = Router();
 
+RutasEventos.use(bodyParser.json());
+RutasEventos.use("/eventos", verificarClave);
+RutasEventos.use("/eventos", verificarDominio);
+
 //lista de eventos
-RutasEventos.get("/eventos", (_req,_res) => {
+RutasEventos.get("/eventos", checkAdmin, (_req,_res) => {
     accesoEventos.getEventos().then((v)=>{
         _res.send(v);
     })
 })
   
 //datos del usuario segun evento
-RutasEventos.get("/eventos/:nombre", (_req,_res) => {
+RutasEventos.get("/eventos/:nombre", checkAdmin, (_req,_res) => {
     accesoEventos.getEvento(_req.params.nombre).then((v)=>{
         _res.send(v);
     })
 })
   
 //subir nuevo evento
-RutasEventos.post("/eventos", bodyParser.json(), (_req,_res) => {
+RutasEventos.post("/eventos", checkAdmin, (_req,_res) => {
     console.log(_req.body)
     accesoEventos.getEvento(_req.body.nombre).then((v)=>{
         if(v != undefined){
@@ -45,7 +52,7 @@ RutasEventos.post("/eventos", bodyParser.json(), (_req,_res) => {
 })
 
 //borrar evento
-RutasEventos.delete("/eventos/:nombre", (_req,_res) => {
+RutasEventos.delete("/eventos/:nombre", checkAdmin, (_req,_res) => {
     accesoEventos.getEvento(_req.params.nombre).then((v)=>{
         if(v == undefined){
             _res.send("no existe");
@@ -59,7 +66,7 @@ RutasEventos.delete("/eventos/:nombre", (_req,_res) => {
 })
 
 //modificar todo el evento
-RutasEventos.put("/eventos/:nombre", (_req,_res) => {
+RutasEventos.put("/eventos/:nombre", checkAdmin, (_req,_res) => {
     accesoEventos.getEvento(_req.params.nombre).then((v)=>{
         if(v == undefined){
             _res.send("no existe");
@@ -76,7 +83,7 @@ RutasEventos.put("/eventos/:nombre", (_req,_res) => {
 })
 
 //modificar parte del evento
-RutasEventos.patch("/eventos/:nombre", (_req,_res) => {
+RutasEventos.patch("/eventos/:nombre", checkAdmin, (_req,_res) => {
     accesoEventos.getEvento(_req.params.nombre).then((v)=>{
         if(v == undefined){
             _res.send("no existe");
@@ -109,8 +116,6 @@ RutasEventos.patch("/eventos/:nombre", (_req,_res) => {
 //lista tags
 RutasEventos.get("/eventosTags", (_req, _res) => {
     accesoEventos.getTags().then((v) => {
-        console.log(v);
-        console.log("tags")
         _res.json(v);
     })
 })

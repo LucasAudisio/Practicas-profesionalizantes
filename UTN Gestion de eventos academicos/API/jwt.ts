@@ -10,16 +10,23 @@ export function generarClave(nombre: String): string{
 
     return respuesta;
 }
+
 export function verificarClave(req: any, res: any, next: any){
     const clave = req.headers.authorization;
 
-    if (!clave) {
+    if (clave == undefined) {
         return res.status(401).send('Unauthorized: No token provided.');
     }
 
     try {
-        jwt.verify(clave, claveSecreta);
-        console.log("verificación exitosa");
+        const payload: any = jwt.verify(clave, claveSecreta);
+        const nombreGenerado: string = payload.nombre;
+
+        const nombreSolicitud: string = req.body.nombreUsuario;
+
+        if (nombreGenerado !== nombreSolicitud) {
+            return res.status(401).send('Unauthorized: Invalid token.');
+        }
         next();
     }
     catch (err) {
