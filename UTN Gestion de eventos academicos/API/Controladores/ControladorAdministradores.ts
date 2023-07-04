@@ -48,20 +48,23 @@ export function checkSuper(req: any, res: any, next:any){
 export const RutasAdmin = Router();
 
 RutasAdmin.post("/LoginAdministrador", (req, res) => {
-    accesoUsuario.getUsuario(req.body.nombre).then((v) => {
-        if(v == undefined){
+    accesoUsuario.getUsuario(req.body.nombre).then((b) => {
+        if(b == undefined){
             res.status(400).send("No existe");
             return;
         }
         else{
-            accesoUsuario.login(req.body.nombre, req.body.contraseña).then((b) => {
-                if(b == undefined){
-                    res.status(404).send("usuario no encontrado");
-                    return;
+            accesoUsuario.login(req.body.nombre, req.body.contraseña).then((v) => {
+                if (v) {
+                    if (v == "todo bien") {
+                        let respuesta: JSON = JSON.parse(JSON.stringify(b));
+                        Object.assign(respuesta, { "claveJWT": generarClaveAdmin(req.body.nombre) });
+                        res.json(respuesta);
+                    }
+                    else {
+                        res.status(400).json(v);
+                    }
                 }
-                let respuesta: JSON = JSON.parse(JSON.stringify(v));
-                Object.assign(respuesta, { "claveJWT": generarClaveAdmin(req.body.nombre) });
-                res.json(respuesta);
             })
         }
     })
