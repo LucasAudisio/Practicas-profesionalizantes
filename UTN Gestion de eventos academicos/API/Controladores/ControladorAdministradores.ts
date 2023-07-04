@@ -54,9 +54,15 @@ RutasAdmin.post("/LoginAdministrador", (req, res) => {
             return;
         }
         else{
-            let respuesta: JSON = JSON.parse(JSON.stringify(v));
-            Object.assign(respuesta, { "claveJWT": generarClaveAdmin(req.body.nombre) });
-            res.json(respuesta);
+            accesoUsuario.login(req.body.nombre, req.body.contraseña).then((b) => {
+                if(b == undefined){
+                    res.status(404).send("usuario no encontrado");
+                    return;
+                }
+                let respuesta: JSON = JSON.parse(JSON.stringify(v));
+                Object.assign(respuesta, { "claveJWT": generarClaveAdmin(req.body.nombre) });
+                res.json(respuesta);
+            })
         }
     })
 })
