@@ -3,7 +3,6 @@ import { Router } from 'express';
 import { Investigador } from '../Investigador';
 import { AccesoUsuario } from '../AccesoBD/AccesoUsuarios';
 import { Db, MongoClient } from 'mongodb';
-import bodyParser from 'body-parser';
 import { generarClaveInv, verificarClaveAdmin } from '../jwt';
 import { checkAdmin } from './ControladorAdministradores';
 
@@ -104,8 +103,8 @@ RutasUsuarios.patch("/investigadores/:nombre", checkAdmin, (_req, _res) => {
     })
 })
 // Registrarse
-RutasUsuarios.post("/registrarse", bodyParser.json(), (_req, _res) => {
-
+RutasUsuarios.post("/registrarse", (_req, _res) => {
+    console.log("epic")
     //  mail formato valido
     if (!mailRegex.test(_req.body.correo)) {
         _res.status(400).send("mail invalido");
@@ -117,7 +116,7 @@ RutasUsuarios.post("/registrarse", bodyParser.json(), (_req, _res) => {
         _res.status(400).send("contraseña insegura");
         return;
     }
-
+    console.log("epic2")
     accesoUsuario.getUsuario(_req.body.nombre).then((v: any) => {
         if (v != undefined) {
             _res.status(400).send("nombre de usuario ya en uso");
@@ -137,7 +136,7 @@ RutasUsuarios.post("/registrarse", bodyParser.json(), (_req, _res) => {
     })
 })
 // Login
-RutasUsuarios.post("/login", bodyParser.json(), (_req, _res) => {
+RutasUsuarios.post("/login", (_req, _res) => {
     accesoUsuario.getUsuario(_req.body.nombre).then((b) => {
         if (b) {
             accesoUsuario.login(_req.body.nombre, _req.body.contraseña).then((v) => {

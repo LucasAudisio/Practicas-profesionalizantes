@@ -1,16 +1,11 @@
 import { TipoParticipacion } from "./TipoParticipacion";
 
 export class Participacion{
-    id: Number;
-    idEvento: Number;
-    idInvestigador: Number;
+    nombreInvestigador: String;
     tipoParticipacion: TipoParticipacion;
 
-    constructor(id: Number, idEvento: Number, idInvestigador: Number, tipoParticipacion: TipoParticipacion){
-        this.id = id;
-        this.idEvento = idEvento;
-        this.idInvestigador = idInvestigador;
+    constructor(nombreInvestigador: String, tipoParticipacion: TipoParticipacion){
+        this.nombreInvestigador = nombreInvestigador;
         this.tipoParticipacion = tipoParticipacion;
     }
-
 }

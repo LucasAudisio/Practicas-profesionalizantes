@@ -2,7 +2,6 @@ import { verificarDominio } from '../verificacionDominio';
 import { Router } from 'express';
 import { AccesoUsuario } from '../AccesoBD/AccesoUsuarios';
 import { Db, MongoClient } from 'mongodb';
-import bodyParser from 'body-parser';
 import { generarClaveAdmin, verificarClaveAdmin } from '../jwt';
 import { Administrador } from '../Administrador';
 
@@ -48,43 +47,10 @@ export function checkSuper(req: any, res: any, next:any){
 // Enrutador
 export const RutasAdmin = Router();
 
-RutasAdmin.use(bodyParser.json());
-
-RutasAdmin.post("/superLoginAdministrador", (req, res) => {
-    accesoUsuario.getUsuario(req.body.nombre).then((v) => {
-        if(v == undefined){
-            res.status(400).send("No existe");
-            return;
-        }
-        else if(!v.esSuper){
-            res.status(400).send("No es super usuario");
-            return;
-        }
-        else{
-            accesoUsuario.login(req.body.nombre, req.body.contraseña).then((b) => {
-                if (b) {
-                    if (b == "todo bien") {
-                        let respuesta: JSON = JSON.parse(JSON.stringify(v));
-                        Object.assign(respuesta, { "claveJWT": generarClaveAdmin(req.body.nombre) });
-                        res.json(respuesta);
-                    }
-                    else {
-                        res.status(400).json(v);
-                    }
-                }
-            });
-        }
-    })
-})
-
 RutasAdmin.post("/LoginAdministrador", (req, res) => {
     accesoUsuario.getUsuario(req.body.nombre).then((v) => {
         if(v == undefined){
             res.status(400).send("No existe");
-            return;
-        }
-        else if(v.esSuper){
-            res.status(400).send("Es super usuario");
             return;
         }
         else{

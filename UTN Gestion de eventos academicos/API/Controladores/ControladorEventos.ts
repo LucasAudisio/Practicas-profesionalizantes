@@ -1,11 +1,8 @@
-import bodyParser from "body-parser";
 import { Router } from "express";
 import { Db, MongoClient } from "mongodb";
 import { AccesoEvento } from "../AccesoBD/AccesoEvento";
 import { Evento } from "../Evento";
 import { checkAdmin } from "./ControladorAdministradores";
-import { verificarClaveAdmin } from "../jwt";
-import { verificarDominio } from "../verificacionDominio";
 
 const url: string = "mongodb://127.0.0.1:27017/Gestion-de-eventos-academicos";
 const client: MongoClient = new MongoClient(url);
@@ -14,10 +11,6 @@ const database: Db = client.db("Gestion-de-eventos-academicos");
 var accesoEventos: AccesoEvento = new AccesoEvento(url, database, database.collection("Evento"));
 
 export const RutasEventos = Router();
-
-RutasEventos.use(bodyParser.json());
-RutasEventos.use("/eventos", verificarClaveAdmin);
-RutasEventos.use("/eventos", verificarDominio);
 
 //lista de eventos
 RutasEventos.get("/eventos", checkAdmin, (_req,_res) => {

@@ -13,7 +13,7 @@ const app = express();
 
 const port = 3000;
 
-console.log(createHash('sha256').update("123").digest('hex'))
+// console.log(createHash('sha256').update("123").digest('hex'))
 
 app.get('/', (_req, _res) => {
     _res.send("API de UTN Gestion de eventos academicos");
@@ -21,7 +21,7 @@ app.get('/', (_req, _res) => {
 
 //Middlewares
 app.use(verificarDominio);
-app.use(bodyParser.json);
+app.use(bodyParser.json());
 app.use("/investigadores", verificarClaveAdmin, checkAdmin);
 app.use("/administradores",verificarClaveAdmin, checkSuper);
 app.use("/eventos", verificarClaveAdmin, checkAdmin);

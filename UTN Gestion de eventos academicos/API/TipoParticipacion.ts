@@ -1,3 +1,5 @@
 export enum TipoParticipacion{
-    APROBADO, DESAPROBADO, APROBADO_ASISTENCIA
+    APROBADO = 0, 
+    DESAPROBADO = 1, 
+    APROBADO_ASISTENCIA = 2
 }
