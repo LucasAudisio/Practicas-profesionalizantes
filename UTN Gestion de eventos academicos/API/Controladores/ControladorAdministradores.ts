@@ -3,14 +3,18 @@ import { Router } from 'express';
 import { AccesoUsuario } from '../AccesoBD/AccesoUsuarios';
 import { Db, MongoClient } from 'mongodb';
 import bodyParser from 'body-parser';
-import { generarClave, verificarClave } from '../jwt';
+import { generarClaveAdmin, verificarClaveAdmin } from '../jwt';
 import { Administrador } from '../Administrador';
 
 // Base de datos
 const url: string = "mongodb://127.0.0.1:27017/Gestion-de-eventos-academicos";
 const client: MongoClient = new MongoClient(url);
 const database: Db = client.db("Gestion-de-eventos-academicos");
-var accesoUsuario: AccesoUsuario = new AccesoUsuario(url, database, database.collection("Administrador"))
+var accesoUsuario: AccesoUsuario = new AccesoUsuario(url, database, database.collection("Administrador"));
+
+accesoUsuario.borrarUsuario("admin");
+const usuarioTemp = new Administrador("admin", "admin123", true);
+accesoUsuario.subirUsuario(usuarioTemp);
 
 export function checkAdmin(req: any, res: any, next:any){
     accesoUsuario.getUsuario(req.body.nombreUsuario).then((v) => {
@@ -24,7 +28,7 @@ export function checkAdmin(req: any, res: any, next:any){
     })
 }
 
-function checkSuper(req: any, res: any, next:any){
+export function checkSuper(req: any, res: any, next:any){
     accesoUsuario.getUsuario(req.body.nombreUsuario).then((v) => {
         if(v == undefined){
             res.status(404).send("usuario no encontrado");
@@ -46,10 +50,6 @@ export const RutasAdmin = Router();
 
 RutasAdmin.use(bodyParser.json());
 
-RutasAdmin.use("/administradores", verificarDominio, checkSuper, verificarClave);
-RutasAdmin.use("/superLoginAdministrador", verificarDominio);
-RutasAdmin.use("/LoginAdministrador", verificarDominio);
-
 RutasAdmin.post("/superLoginAdministrador", (req, res) => {
     accesoUsuario.getUsuario(req.body.nombre).then((v) => {
         if(v == undefined){
@@ -65,7 +65,7 @@ RutasAdmin.post("/superLoginAdministrador", (req, res) => {
                 if (b) {
                     if (b == "todo bien") {
                         let respuesta: JSON = JSON.parse(JSON.stringify(v));
-                        Object.assign(respuesta, { "claveJWT": generarClave(req.body.nombre) });
+                        Object.assign(respuesta, { "claveJWT": generarClaveAdmin(req.body.nombre) });
                         res.json(respuesta);
                     }
                     else {
@@ -89,7 +89,7 @@ RutasAdmin.post("/LoginAdministrador", (req, res) => {
         }
         else{
             let respuesta: JSON = JSON.parse(JSON.stringify(v));
-            Object.assign(respuesta, { "claveJWT": generarClave(req.body.nombre) });
+            Object.assign(respuesta, { "claveJWT": generarClaveAdmin(req.body.nombre) });
             res.json(respuesta);
         }
     })
@@ -137,7 +137,7 @@ RutasAdmin.delete("/administradores/:nombre", (req, res) => {
         }
     })
 })
-//modificar todo el usuario
+//modificar todo el admin
 RutasAdmin.put("/administradores/:nombre", (req, res) => {
     accesoUsuario.getUsuario(req.params.nombre).then((v) => {
         if (v == undefined) {
@@ -153,7 +153,7 @@ RutasAdmin.put("/administradores/:nombre", (req, res) => {
     })
 })
 
-//modificar parte del usuario
+//modificar parte del admin
 RutasAdmin.patch("/administradores/:nombre", (req, res) => {
     accesoUsuario.getUsuario(req.params.nombre).then((v) => {
         if (v == undefined) {

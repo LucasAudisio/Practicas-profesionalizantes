@@ -4,7 +4,7 @@ import { Db, MongoClient } from "mongodb";
 import { AccesoEvento } from "../AccesoBD/AccesoEvento";
 import { Evento } from "../Evento";
 import { checkAdmin } from "./ControladorAdministradores";
-import { verificarClave } from "../jwt";
+import { verificarClaveAdmin } from "../jwt";
 import { verificarDominio } from "../verificacionDominio";
 
 const url: string = "mongodb://127.0.0.1:27017/Gestion-de-eventos-academicos";
@@ -16,7 +16,7 @@ var accesoEventos: AccesoEvento = new AccesoEvento(url, database, database.colle
 export const RutasEventos = Router();
 
 RutasEventos.use(bodyParser.json());
-RutasEventos.use("/eventos", verificarClave);
+RutasEventos.use("/eventos", verificarClaveAdmin);
 RutasEventos.use("/eventos", verificarDominio);
 
 //lista de eventos

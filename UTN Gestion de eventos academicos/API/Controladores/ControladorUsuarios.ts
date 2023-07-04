@@ -4,7 +4,7 @@ import { Investigador } from '../Investigador';
 import { AccesoUsuario } from '../AccesoBD/AccesoUsuarios';
 import { Db, MongoClient } from 'mongodb';
 import bodyParser from 'body-parser';
-import { generarClave, verificarClave } from '../jwt';
+import { generarClaveInv, verificarClaveAdmin } from '../jwt';
 import { checkAdmin } from './ControladorAdministradores';
 
 // Regex
@@ -20,12 +20,6 @@ var accesoUsuario: AccesoUsuario = new AccesoUsuario(url, database, database.col
 
 // Enrutador
 export const RutasUsuarios = Router();
-
-RutasUsuarios.use(bodyParser.json());
-
-RutasUsuarios.use("/investigadores", verificarDominio, verificarClave)
-RutasUsuarios.use("/registrarse", verificarDominio)
-RutasUsuarios.use("/login", verificarDominio)
 
 //lista de usuarios
 RutasUsuarios.get("/investigadores", checkAdmin, (_req, _res) => {
@@ -150,7 +144,7 @@ RutasUsuarios.post("/login", bodyParser.json(), (_req, _res) => {
                 if (v) {
                     if (v == "todo bien") {
                         let respuesta: JSON = JSON.parse(JSON.stringify(b));
-                        Object.assign(respuesta, { "claveJWT": generarClave(_req.body.nombre) });
+                        Object.assign(respuesta, { "claveJWT": generarClaveInv(_req.body.nombre) });
                         _res.json(respuesta);
                     }
                     else {
